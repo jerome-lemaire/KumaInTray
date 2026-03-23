@@ -1,6 +1,6 @@
 # KumaInTray 🐻🟩
 
-[![Build Status](https://github.com/SemiCroustii/KumaInTray/actions/workflows/build.yml/badge.svg)](https://github.com/SemiCroustii/KumaInTray/actions)
+[![Build Status](https://github.com/jerome-lemaire/KumaInTray/actions/workflows/build.yml/badge.svg)](https://github.com/jerome-lemaire/KumaInTray/actions)
 [![.NET Version](https://img.shields.io/badge/.NET-10.0-blue.svg)](https://dotnet.microsoft.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -86,7 +86,7 @@ If you want to compile the project yourself:
 Prerequisites: [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 
 ```bash
-git clone [https://github.com/SemiCroustii/KumaInTray.git](https://github.com/SemiCroustii/KumaInTray.git)
+git clone [https://github.com/jerome-lemaire/KumaInTray.git](https://github.com/jerome-lemaire/KumaInTray.git)
 cd KumaInTray
 dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true --self-contained false
 ```
