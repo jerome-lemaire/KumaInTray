@@ -1,0 +1,11 @@
+{
+  "Checking": "Uptime Kuma - Vérification en cours...",
+  "Quit": "Quitter",
+  "ServicesDown": "Uptime Kuma : Un ou plusieurs services sont DOWN !",
+  "AlertTitle": "Alerte Uptime Kuma",
+  "AlertMessage": "Un service vient de tomber ! Vérifie ton dashboard.",
+  "ServicesUp": "Uptime Kuma : Tous les services sont UP",
+  "ConnectionError": "Erreur de connexion : ",
+  "ConfigErrorTitle": "Erreur",
+  "ConfigErrorMessage": "L'URL UptimeKuma:MetricsUrl est introuvable."
+}

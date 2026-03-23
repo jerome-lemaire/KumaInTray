@@ -1,0 +1,11 @@
+{
+  "Checking": "Uptime Kuma - Checking...",
+  "Quit": "Quit",
+  "ServicesDown": "Uptime Kuma: One or more services are DOWN!",
+  "AlertTitle": "Uptime Kuma Alert",
+  "AlertMessage": "A service just went down! Check your dashboard.",
+  "ServicesUp": "Uptime Kuma: All services are UP",
+  "ConnectionError": "Connection error: ",
+  "ConfigErrorTitle": "Error",
+  "ConfigErrorMessage": "The UptimeKuma:MetricsUrl is missing."
+}

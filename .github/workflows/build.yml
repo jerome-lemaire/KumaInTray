@@ -1,0 +1,38 @@
+name: Build KumaTray
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    # On utilise un runner Windows pour garantir la compatibilité avec WinForms
+    runs-on: windows-latest
+
+    steps:
+    - name: Récupération du code
+      uses: actions/checkout@v4
+
+    - name: Installation de .NET 10
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Restauration des dépendances
+      run: dotnet restore
+
+    - name: Compilation en fichier unique (Single File)
+      # On force la compilation en Release pour Windows x64 et on sort le résultat dans un dossier "publish"
+      run: dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true --self-contained false -o ./publish
+
+    - name: Mise à disposition de l'exécutable (Artifact)
+      uses: actions/upload-artifact@v4
+      with:
+        name: KumaTray-Win64
+        # On ne récupère que l'exécutable et le dossier de langues généré
+        path: |
+          ./publish/KumaTray.exe
+          ./publish/locales/
+        if-no-files-found: error
