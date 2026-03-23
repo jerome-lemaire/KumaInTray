@@ -1,0 +1,42 @@
+name: Release KumaInTray
+
+# Se déclenche uniquement quand un tag commençant par "v" est poussé (ex: v1.0.0, v1.1)
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: windows-latest
+    
+    # Permission indispensable pour que le bot GitHub puisse créer la Release
+    permissions:
+      contents: write 
+
+    steps:
+    - name: Récupération du code
+      uses: actions/checkout@v4
+
+    - name: Installation de .NET 10
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Restauration des dépendances
+      run: dotnet restore
+
+    - name: Compilation en fichier unique
+      run: dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true --self-contained false -o ./publish
+
+    - name: Création de l'archive ZIP
+      # On utilise PowerShell (natif sur le runner Windows) pour zipper le .exe et les dossiers (locales)
+      run: Compress-Archive -Path ./publish/* -DestinationPath ./KumaInTray-Win64.zip
+      shell: powershell
+
+    - name: Publication de la Release sur GitHub
+      uses: softprops/action-gh-release@v2
+      with:
+        files: KumaInTray-Win64.zip
+        # Génère automatiquement les notes de version basées sur les PR fusionnées depuis la dernière release
+        generate_release_notes: true
