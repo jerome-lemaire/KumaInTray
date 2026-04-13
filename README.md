@@ -86,7 +86,7 @@ If you want to compile the project yourself:
 Prerequisites: [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 
 ```bash
-git clone [https://github.com/jerome-lemaire/KumaInTray.git](https://github.com/jerome-lemaire/KumaInTray.git)
+git clone https://github.com/jerome-lemaire/KumaInTray.git
 cd KumaInTray
 dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true --self-contained false
 ```

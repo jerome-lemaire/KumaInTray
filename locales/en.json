@@ -7,5 +7,6 @@
   "ServicesUp": "Uptime Kuma: All services are UP",
   "ConnectionError": "Connection error: ",
   "ConfigErrorTitle": "Error",
-  "ConfigErrorMessage": "The UptimeKuma:MetricsUrl is missing."
+  "ConfigErrorMessage": "The UptimeKuma:MetricsUrl is missing.",
+  "RunAtStartup": "Run at Windows startup"
 }

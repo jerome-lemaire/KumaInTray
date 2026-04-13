@@ -7,5 +7,6 @@
   "ServicesUp": "Uptime Kuma : Tous les services sont UP",
   "ConnectionError": "Erreur de connexion : ",
   "ConfigErrorTitle": "Erreur",
-  "ConfigErrorMessage": "L'URL UptimeKuma:MetricsUrl est introuvable."
+  "ConfigErrorMessage": "L'URL UptimeKuma:MetricsUrl est introuvable.",
+  "RunAtStartup": "Lancer au démarrage de Windows"
 }

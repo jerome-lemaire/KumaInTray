@@ -1,12 +1,7 @@
-﻿using System;
-using System.Drawing;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
-using System.Linq;
+using Microsoft.Win32;
 
 namespace KumaTray;
 
@@ -75,9 +70,20 @@ public class TrayApplicationContext : ApplicationContext
       Text = Translator.Get("Checking")
     };
 
-    // Ajout d'un menu clic-droit pour pouvoir fermer l'appli
     var menu = new ContextMenuStrip();
+        
+    // Nouvelle option : Lancer au démarrage
+    var startupMenuItem = new ToolStripMenuItem(Translator.Get("RunAtStartup"))
+    {
+        CheckOnClick = true,
+        Checked = IsStartupEnabled() // Coche la case si l'app est déjà dans le registre
+    };
+    startupMenuItem.CheckedChanged += (s, e) => SetStartup(startupMenuItem.Checked);
+    
+    menu.Items.Add(startupMenuItem);
+    menu.Items.Add(new ToolStripSeparator()); // Petite ligne de séparation visuelle
     menu.Items.Add(Translator.Get("Quit"), null, (s, e) => Exit());
+    
     _trayIcon.ContextMenuStrip = menu;
 
     _trayIcon.MouseClick += TrayIcon_MouseClick;
@@ -180,5 +186,38 @@ public class TrayApplicationContext : ApplicationContext
   {
     _trayIcon.Visible = false;
     Application.Exit();
+  }
+
+  private const string AppName = "KumaInTray";
+
+  private void SetStartup(bool enable)
+  {
+      try
+      {
+          using RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+          if (key != null)
+          {
+              if (enable)
+              {
+                  // On inscrit le chemin exact de l'exécutable actuel
+                  string? exePath = Environment.ProcessPath;
+                  if (exePath != null) key.SetValue(AppName, exePath);
+              }
+              else
+              {
+                  key.DeleteValue(AppName, false);
+              }
+          }
+      }
+      catch (Exception ex)
+      {
+          MessageBox.Show($"Erreur lors de la modification du registre : {ex.Message}", Translator.Get("ConfigErrorTitle"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+  }
+
+  private bool IsStartupEnabled()
+  {
+      using RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", false);
+      return key?.GetValue(AppName) != null;
   }
 }
