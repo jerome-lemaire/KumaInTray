@@ -43,6 +43,10 @@ static class Program
 
 public class TrayApplicationContext : ApplicationContext
 {
+  private readonly Icon _iconGreen;
+  private readonly Icon _iconRed;
+  private readonly Icon _iconOrange;
+  private readonly Icon _iconGray;
   private readonly NotifyIcon _trayIcon;
   private readonly System.Windows.Forms.Timer _pollTimer;
   private readonly HttpClient _httpClient;
@@ -55,6 +59,11 @@ public class TrayApplicationContext : ApplicationContext
     _dashboardUrl = dashboardUrl;
     _httpClient = new HttpClient();
 
+    _iconGreen = CreateIcon(Color.Green);
+    _iconRed = CreateIcon(Color.Red);
+    _iconOrange = CreateIcon(Color.Orange);
+    _iconGray = CreateIcon(Color.Gray);
+
     // Ajout automatique de l'authentification si la clé est présente
     if (!string.IsNullOrWhiteSpace(apiKey))
     {
@@ -65,7 +74,7 @@ public class TrayApplicationContext : ApplicationContext
 
     _trayIcon = new NotifyIcon
     {
-      Icon = CreateIcon(Color.Gray),
+      Icon = _iconGray,
       Visible = true,
       Text = Translator.Get("Checking")
     };
@@ -112,7 +121,7 @@ public class TrayApplicationContext : ApplicationContext
         var downServices = downMatches.Select(m => m.Groups[1].Value).ToList();
         string namesList = string.Join(", ", downServices);
 
-        _trayIcon.Icon = CreateIcon(Color.Red);
+        _trayIcon.Icon = _iconRed;
 
         // Au survol (limité à 63 caractères par Windows)
         string hoverText = $"{Translator.Get("ServicesDown")} ({downMatches.Count})";
@@ -133,14 +142,14 @@ public class TrayApplicationContext : ApplicationContext
       }
       else
       {
-        _trayIcon.Icon = CreateIcon(Color.Green);
+        _trayIcon.Icon = _iconGreen;
         _trayIcon.Text = Translator.Get("ServicesUp");
         _wasDownLastCheck = false;
       }
     }
     catch (Exception ex)
     {
-      _trayIcon.Icon = CreateIcon(Color.Orange);
+      _trayIcon.Icon = _iconOrange;
       string errorText = $"{Translator.Get("ConnectionError")}{ex.Message}";
       _trayIcon.Text = errorText.Length > 63 ? errorText.Substring(0, 63) : errorText;
     }
