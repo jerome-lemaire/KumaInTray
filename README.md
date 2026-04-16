@@ -13,7 +13,9 @@ Perfect for keeping an eye on your homelab services (Jellyfin, Sonarr, Radarr, e
 * **Visual Indicator:** Green dot when everything is fine, red if a service goes offline.
 * **Smart Notifications:** Windows balloon tip the moment a downtime is detected, specifically listing the affected services.
 * **Quick Access:** A simple left-click on the icon opens your Uptime Kuma dashboard.
-* **Lightweight & Portable:** Compiled into a single, standalone `.exe` file.
+* **Native Auto-Start:** Easily toggle "Run at Windows startup" directly from the tray icon's right-click menu (Registry integrated for reliability).
+* **Smart Logging:** Daily log files with adjustable verbosity levels to track background events and troubleshoot connection issues.
+* **Lightweight & Stable:** Compiled into a single `.exe` file with optimized memory management for 24/7 background execution.
 * **Multilingual:** Native support for multiple languages via easy-to-edit JSON files.
 
 ## 🚀 Installation
@@ -22,8 +24,7 @@ Perfect for keeping an eye on your homelab services (Jellyfin, Sonarr, Radarr, e
 2. Extract the archive into your preferred folder.
 3. Configure the `appsettings.json` file (see below).
 4. Run `KumaInTray.exe`.
-
-> **Tip:** To launch the app at Windows startup, press `Win + R`, type `shell:startup`, and place a shortcut to `KumaInTray.exe` in that folder.
+5. Right-click the tray icon and select **Run at Windows startup** to ensure it launches automatically after reboots.
 
 ## ⚙️ Configuration
 
@@ -35,7 +36,8 @@ Next to your executable, create or modify the `appsettings.json` file with your 
     "DashboardUrl": "http://192.168.X.X:3001/",
     "MetricsUrl": "http://192.168.X.X:3001/metrics",
     "ApiKey": "YOUR_API_KEY",
-    "Language": "" 
+    "Language": "",
+    "LogLevel": "INFO"
   }
 }
 ```
@@ -44,6 +46,7 @@ Next to your executable, create or modify the `appsettings.json` file with your 
 * **MetricsUrl:** The URL of the Uptime Kuma Prometheus endpoint.
 * **ApiKey:** API key to authorize reading metrics (see instructions below).
 * **Language:** Leave empty to use your Windows system language, or force a specific language (e.g., `"en"`, `"fr"`).
+* **LogLevel:** Controls the verbosity of the text logs generated in the `logs/` folder. Valid values: `DEBUG`, `INFO`, `WARN`, `ERROR`, `NONE`.
 
 ### 🔑 How to generate an API Key
 
@@ -68,6 +71,7 @@ KumaInTray is designed to be easily translated by the community. You **don't nee
 ```json
 {
   "Checking": "Uptime Kuma - Checking...",
+  "RunAtStartup": "Run at Windows startup",
   "Quit": "Quit",
   "ServicesDown": "Uptime Kuma: One or more services are DOWN!",
   "AlertTitle": "Uptime Kuma Alert",
@@ -86,7 +90,7 @@ If you want to compile the project yourself:
 Prerequisites: [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 
 ```bash
-git clone https://github.com/jerome-lemaire/KumaInTray.git
+git clone [https://github.com/YOUR-USERNAME/KumaInTray.git](https://github.com/YOUR-USERNAME/KumaInTray.git)
 cd KumaInTray
 dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true --self-contained false
 ```
