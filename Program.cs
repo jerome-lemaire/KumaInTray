@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using System.Diagnostics;
 using Microsoft.Win32;
 
-namespace KumaTray;
+namespace KumaInTray;
 
 static class Program
 {
@@ -23,6 +23,13 @@ static class Program
     string? apiKey = config["UptimeKuma:ApiKey"];
     string? langOverride = config["UptimeKuma:Language"];
     string? dashboardUrl = config["UptimeKuma:DashboardUrl"];
+    string? logLevelStr = config["UptimeKuma:LogLevel"];
+
+    if (!string.IsNullOrWhiteSpace(logLevelStr) && 
+    Enum.TryParse(logLevelStr, true, out LogLevel parsedLevel))
+    {
+        Logger.MinimumLevel = parsedLevel;
+    }
 
     // Initialisation des traductions avant de lancer l'interface
     Translator.Initialize(langOverride);
@@ -36,6 +43,7 @@ static class Program
     Application.EnableVisualStyles();
     Application.SetCompatibleTextRenderingDefault(false);
 
+    Logger.Log("Starting KumaInTray.", LogLevel.INFO);
     // On passe l'URL récupérée au constructeur
     Application.Run(new TrayApplicationContext(metricsUrl, apiKey, dashboardUrl));
   }
@@ -110,6 +118,7 @@ public class TrayApplicationContext : ApplicationContext
   {
     try
     {
+      Logger.Log($"Checking {_metricsUrl}...", LogLevel.DEBUG);
       string metrics = await _httpClient.GetStringAsync(_metricsUrl);
 
       // La Regex cherche les lignes à 0 et capture la valeur de monitor_name
@@ -130,6 +139,8 @@ public class TrayApplicationContext : ApplicationContext
         // On n'affiche la bulle Windows qu'au moment de la bascule UP -> DOWN
         if (!_wasDownLastCheck)
         {
+          Logger.Log($"Alert triggerd. Services DOWN : {namesList}", LogLevel.WARN);
+
           // Dans la notification (BalloonTip), on a beaucoup plus de place
           string alertMessage = $"{Translator.Get("AlertMessage")}\n\nHS : {namesList}";
 
@@ -144,14 +155,24 @@ public class TrayApplicationContext : ApplicationContext
       {
         _trayIcon.Icon = _iconGreen;
         _trayIcon.Text = Translator.Get("ServicesUp");
-        _wasDownLastCheck = false;
+
+        if (_wasDownLastCheck)
+        {
+            Logger.Log("Back to normal : All services are UP.", LogLevel.INFO);
+            _wasDownLastCheck = false;
+        }
       }
+
+      Logger.Log("Check done successfully.", LogLevel.DEBUG);
     }
     catch (Exception ex)
     {
       _trayIcon.Icon = _iconOrange;
       string errorText = $"{Translator.Get("ConnectionError")}{ex.Message}";
       _trayIcon.Text = errorText.Length > 63 ? errorText.Substring(0, 63) : errorText;
+
+      // On logue les erreurs techniques (réseau, authentification, etc.)
+      Logger.Log($"Erreur de vérification HTTP/Regex : {ex.Message}", LogLevel.ERROR);
     }
   }
 
@@ -193,6 +214,7 @@ public class TrayApplicationContext : ApplicationContext
   }
   private void Exit()
   {
+    Logger.Log("Manualy closing app.", LogLevel.INFO);
     _trayIcon.Visible = false;
     Application.Exit();
   }
